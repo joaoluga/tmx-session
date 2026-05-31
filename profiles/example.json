@@ -1,0 +1,23 @@
+{
+  "session": "example",
+  "root": "~/projects/demo",
+  "on_attach": "editor",
+  "windows": [
+    {
+      "name": "editor",
+      "command": "nvim"
+    },
+    {
+      "name": "git",
+      "panes": [
+        { "command": null },
+        { "command": "git status" }
+      ],
+      "layout": "even-horizontal"
+    },
+    {
+      "name": "shell",
+      "dir": "~"
+    }
+  ]
+}
