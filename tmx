@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""tmx — a tiny tmux session manager driven by JSON profiles.
+"""tmx — a tiny tmux session manager driven by TOML profiles.
 
 Profiles live in $TMX_PROFILE_DIR (default: ~/.config/tmux/profiles) and
 describe the windows, panes, and commands that make up a session. Run
@@ -9,10 +9,10 @@ describe the windows, panes, and commands that make up a session. Run
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import subprocess
 import sys
+import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import NoReturn, cast
@@ -33,19 +33,20 @@ def expand(path: str | None, fallback: str = "~") -> str:
     return os.path.expanduser(path if path else fallback)
 
 
-def read_json(path: Path) -> object:
-    return cast(object, json.loads(path.read_text()))
+def read_toml(path: Path) -> dict[str, object]:
+    with path.open("rb") as f:
+        return cast(dict[str, object], tomllib.load(f))
 
 
 def as_dict(value: object) -> dict[str, object]:
     if not isinstance(value, dict):
-        raise ValueError("expected a JSON object")
+        raise ValueError("expected a table")
     return cast(dict[str, object], value)
 
 
 def as_list(value: object) -> list[object]:
     if not isinstance(value, list):
-        raise ValueError("expected a JSON list")
+        raise ValueError("expected an array")
     return cast(list[object], value)
 
 
@@ -200,13 +201,13 @@ class Profile:
 
 
 def load_profile(name: str) -> Profile:
-    path = PROFILE_DIR / f"{name}.json"
+    path = PROFILE_DIR / f"{name}.toml"
     if not path.exists():
         die(f"Profile not found: {path}")
     try:
-        return Profile.from_dict(as_dict(read_json(path)))
-    except json.JSONDecodeError as e:
-        die(f"Invalid JSON in {path}: {e}")
+        return Profile.from_dict(read_toml(path))
+    except tomllib.TOMLDecodeError as e:
+        die(f"Invalid TOML in {path}: {e}")
     except ValueError as e:
         die(f"Profile '{name}': {e}")
 
@@ -214,14 +215,14 @@ def load_profile(name: str) -> Profile:
 def list_profiles(tmux: Tmux) -> None:
     if not PROFILE_DIR.exists():
         die(f"No profiles directory: {PROFILE_DIR}")
-    paths = sorted(PROFILE_DIR.glob("*.json"))
+    paths = sorted(PROFILE_DIR.glob("*.toml"))
     if not paths:
         print("No profiles found.")
         return
     for p in paths:
         try:
-            profile = Profile.from_dict(as_dict(read_json(p)))
-        except (json.JSONDecodeError, ValueError) as e:
+            profile = Profile.from_dict(read_toml(p))
+        except (tomllib.TOMLDecodeError, ValueError) as e:
             print(f"  {p.stem:16s}  <invalid: {e}>")
             continue
         active = " (active)" if tmux.has_session(profile.session) else ""
@@ -266,7 +267,7 @@ class Args(argparse.Namespace):
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="tmx",
-        description="Create tmux sessions from JSON profiles.",
+        description="Create tmux sessions from TOML profiles.",
         epilog="Profiles are read from $TMX_PROFILE_DIR (default: ~/.config/tmux/profiles).",
     )
     _ = parser.add_argument(

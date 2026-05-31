@@ -1,0 +1,26 @@
+# Example tmx profile. Copy it and adapt it to your own tools.
+# Run with:  tmx example
+
+session = "example"
+root = "~/projects/demo"        # default working directory for every window
+on_attach = "editor"            # window to focus after the session is built
+
+# A simple window: one pane running a command.
+[[windows]]
+name = "editor"
+command = "nvim"
+
+# A split window: two side-by-side panes. The first pane is the window itself
+# (here a plain shell); omit `command` for a plain shell.
+[[windows]]
+name = "git"
+layout = "even-horizontal"      # even-horizontal | even-vertical | main-horizontal | main-vertical | tiled
+  [[windows.panes]]
+  # first pane = plain shell (no command)
+  [[windows.panes]]
+  command = "git status"
+
+# A plain shell window with its own working directory.
+[[windows]]
+name = "shell"
+dir = "~"

@@ -2,7 +2,7 @@ PREFIX      ?= $(HOME)/.local
 BINDIR      ?= $(PREFIX)/bin
 PROFILE_DIR ?= $(HOME)/.config/tmux/profiles
 
-PROFILES := $(wildcard profiles/*.json)
+PROFILES := $(wildcard profiles/*.toml)
 
 .PHONY: help install install-profiles install-all uninstall
 
