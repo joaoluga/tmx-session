@@ -1,6 +1,6 @@
 # tmx — Tmux Session Manager
 
-[![Version](https://img.shields.io/github/v/tag/joaoluga/tmx?label=version&sort=semver&color=blue)](https://github.com/joaoluga/tmx/tags)
+[![Version](https://img.shields.io/github/v/tag/joaoluga/tmx-session?label=version&sort=semver&color=blue)](https://github.com/joaoluga/tmx-session/tags)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![tmux](https://img.shields.io/badge/tmux-required-1BB91F?logo=tmux&logoColor=white)](https://github.com/tmux/tmux)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -24,8 +24,8 @@ The commands inside your profiles (e.g. `nvim`, `git`, `lazygit`) are yours to p
 ## Install
 
 ```bash
-git clone https://github.com/joaoluga/tmx.git
-cd tmx
+git clone https://github.com/joaoluga/tmx-session.git
+cd tmx-session
 ```
 
 ### With make
