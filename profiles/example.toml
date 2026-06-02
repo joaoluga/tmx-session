@@ -10,15 +10,28 @@ on_attach = "editor"            # window to focus after the session is built
 name = "editor"
 command = "nvim"
 
-# A split window: two side-by-side panes. The first pane is the window itself
-# (here a plain shell); omit `command` for a plain shell.
+# A split window: two side-by-side panes sized by percentage. `split` is
+# "horizontal" (panes left/right) or "vertical" (stacked). Each pane's `size` is
+# its share of the window along the split; omit `size` for an even split. The
+# first pane is the window itself; omit `command` for a plain shell.
 [[windows]]
 name = "git"
-layout = "even-horizontal"      # even-horizontal | even-vertical | main-horizontal | main-vertical | tiled
+split = "horizontal"
   [[windows.panes]]
-  # first pane = plain shell (no command)
+  size = 70                     # first pane = plain shell, 70% wide
   [[windows.panes]]
   command = "git status"
+  size = 30
+
+# A split using a named tmux preset instead of percentages — `layout` accepts
+# any value `select-layout` does (a preset, or a captured layout string).
+[[windows]]
+name = "logs"
+layout = "even-vertical"        # even-horizontal | even-vertical | main-horizontal | main-vertical | tiled
+  [[windows.panes]]
+  command = "tail -f /var/log/syslog"
+  [[windows.panes]]
+  command = "htop"
 
 # A plain shell window with its own working directory.
 [[windows]]
